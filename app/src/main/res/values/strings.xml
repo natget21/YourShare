@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Your Share</string>
+    <string name="err_msg_password">Enter the password</string>
+    <string name="err_msg_order">Invalid Input !</string>
+    <string-array name="VAT">
+        <item>0 %</item>
+        <item>5 %</item>
+        <item>10 %</item>
+        <item>15 %</item>
+    </string-array>
+    <string-array name="ServiceCharge">
+        <item>0 %</item>
+        <item>3 %</item>
+        <item>5 %</item>
+        <item>10 %</item>
+    </string-array>
+</resources>
