@@ -1,6 +1,11 @@
 package com.natiit.www.yourshare;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.constraint.ConstraintLayout;
@@ -11,6 +16,11 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -39,10 +49,25 @@ public class Main2Activity extends AppCompatActivity {
     private Spinner vat;
     private Spinner serviceCharge;
     private int count =1;
+    private int theme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences setting = getSharedPreferences("YourShare",MODE_PRIVATE);
+        theme = setting.getInt("theme",R.style.AppTheme);
+        setTheme(theme);
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher_custom_round);
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme =getTheme();
+        theme.resolveAttribute(R.attr.colorPrimary,typedValue,true);
+        int color = typedValue.data;
+        ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription(getString(R.string.app_name),bm,color);
+        setTaskDescription(taskDescription);
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main2);
 
         calculate = (Button)findViewById(R.id.calculate);
@@ -64,6 +89,48 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        SharedPreferences setting = getSharedPreferences("YourShare",MODE_PRIVATE);
+        theme = setting.getInt("theme",R.style.AppTheme);
+        setTheme(theme);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences setting = getSharedPreferences("YourShare",MODE_PRIVATE);
+        SharedPreferences.Editor e = setting.edit();
+        e.putInt("theme",theme);
+        e.commit();
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater i =getMenuInflater();
+        i.inflate(R.menu.night_mode_cheack_menu,menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.nightMode:
+                changeTheme();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void calculateShare(ArrayList<TextInputLayout> txtlayout) {
@@ -209,5 +276,17 @@ public class Main2Activity extends AppCompatActivity {
     public static int dpToPx(int dp, Context context){
         float density = context.getResources().getDisplayMetrics().density;
         return round((float)dp * density);
+    }
+
+    public void changeTheme() {
+        if(theme==R.style.AppTheme){
+            setTheme(R.style.AppThemeDark);
+            theme=R.style.AppThemeDark;
+            recreate();
+        }else{
+            setTheme(R.style.AppTheme);
+            theme=R.style.AppTheme;
+            recreate();
+        }
     }
 }
