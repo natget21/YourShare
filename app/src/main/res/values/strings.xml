@@ -2,6 +2,7 @@
     <string name="app_name">Your Share</string>
     <string name="err_msg_password">Enter the password</string>
     <string name="err_msg_order">Invalid Input !</string>
+    <string name="app_intro_skip">Skiped</string>
     <string-array name="VAT">
         <item>0 %</item>
         <item>5 %</item>
